@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+<body>
+<div id="grafik"></div>
+
+<script>
+    // Veri oluşturun (örnek veri)
+    var data = [
+        { x: 20, y: 0 },
+        { x: 60, y: -18 }
+    ];
+
+    var margin = { top: 20, right: 20, bottom: 30, left: 40 },
+        width = 800 - margin.left - margin.right,
+        height = 400 - margin.top - margin.bottom;
+
+    var svg = d3.select("#grafik")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    var xScale = d3.scaleLinear()
+        .domain([0, 360])
+        .range([0, width]);
+
+    var yScale = d3.scaleLinear()
+        .domain([-20, 5]) // Y ekseni özelleştirilmiş, verilerinize uygun şekilde ayarlayın
+        .range([height, 0]);
+
+    // Verilerinize göre dikdörtgenler oluşturun
+    svg.selectAll("rect")
+        .data(data)
+        .enter()
+        .append("rect")
+        .attr("x", function(d) { return xScale(d.x) - 5; }) // Dikdörtgenlerin merkezlerini ayarlamak için -5 ekledik
+        .attr("y", function(d) { return yScale(d.y); })
+        .attr("width", 10) // Dikdörtgenlerin genişliği
+        .attr("height", function(d) { return height - yScale(d.y); }) // Dikdörtgenlerin yüksekliği
+
+    // Y ekseni (sağ tarafta)
+    var yAxis = d3.axisRight(yScale);
+    svg.append("g")
+        .attr("class", "y-axis")
+        .call(yAxis);
+
+    // X ekseni
+    var xAxis = d3.axisBottom(xScale)
+        .ticks(12); // X ekseni üzerindeki işaretlemelerin sayısını belirleyin
+    svg.append("g")
+        .attr("class", "x-axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+
+</script>
+</body>
+</html>
